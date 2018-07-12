@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 
 /**
@@ -11,31 +12,58 @@ public class GridManager : MonoBehaviour
 {
 
     public static GridManager instance;
+   
+    public int Score
+    {
+        get { return score; }
+        set
+        {
+            score = value;
+            if (scoreText)
+            {
+                scoreText.text = "Cleaned: " + value.ToString();
+            }
+        }
+    }
 
     public TileUnit[,] tiles;
     public Player playerReference;
-    public int Score;
+    public int score = 0;
     public int gridWidth = 10;
     public int gridHeight = 5;
 
     [SerializeField]
     private GameObject tileUnitPrefab;
-
     [SerializeField]
     private GameObject playerPrefab;
-
     [SerializeField]
     private GameObject tablePrefab;
-
     [SerializeField]
     private GameObject spillPrefab;
-
     [SerializeField]
     private NodeIndex[] tablePositions;
-
     [SerializeField]
     private float GridYOffset = 2.0f;
 
+
+    // DH: UI Connections:
+    [SerializeField]
+    private Text titleText;
+    [SerializeField]
+    private Text timeText;
+    [SerializeField]
+    private Text scoreText;
+    [SerializeField]
+    private Button randomizeButton;
+    [SerializeField]
+    private Button menuCloseButton;
+    [SerializeField]
+    private GameObject canvasGO;
+    [SerializeField]
+    private string title = "";
+
+    private const float kRoundTime = 180f;
+    private float roundTime = 0f;
     private List<Spill> spills = new List<Spill>();
     private NodeIndex playerstart = new NodeIndex(1, 1);
     private string tileNameStart = "Tile(";
@@ -52,13 +80,14 @@ public class GridManager : MonoBehaviour
         {
             Destroy(this);
         }
-
+        SetupTitle();
         GenerateGrid();
         SpawnTables();
         SpawnPlayer();
         SpawnSpill(new NodeIndex(1, 3));
         SpawnSpill(new NodeIndex(8, 1));
         RepositionCamera();
+        StartRound();
     }
 
 
@@ -75,6 +104,72 @@ public class GridManager : MonoBehaviour
 
     }
 
+    private void SetupTitle()
+    {
+        if (titleText)
+        {
+            titleText.text = string.IsNullOrEmpty(title) ? "Hello World" : title;
+        }
+        else
+        {
+            Debug.LogError("No titleText !!!");
+        }
+        if (!timeText)
+        {
+            Debug.LogError("No timeText !!!");
+        }
+        if (!scoreText)
+        {
+            Debug.LogError("No scoreText !!!");
+        }
+        if (menuCloseButton)
+        {
+            menuCloseButton.onClick.AddListener(() => MenuClose());
+        }
+        else
+        {
+            Debug.LogError("No menuCloseButton !!!");
+        }
+    }
+
+    private void MenuClose()
+    {
+        Debug.Log("LevelSetup:MenuClose");
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+		Application.Quit();
+#endif
+    }
+
+    void StartRound()
+    {
+        if (timeText != null)
+        {
+            roundTime = kRoundTime;
+            timeText.text = "00:00";
+            InvokeRepeating("UpdateRoundTimer", 0.0f, 0.01667f);
+        }
+    }
+
+    void UpdateRoundTimer()
+    {
+        if (timeText != null)
+        {
+            roundTime -= Time.deltaTime;
+            string minutes = Mathf.Floor(roundTime / 60).ToString("00");
+            string seconds = (roundTime % 60).ToString("00");
+            timeText.text = minutes + ":" + seconds;
+            if (roundTime <= 0f)
+            {
+                if (titleText)
+                {
+                    titleText.text = "Round Over!";
+                }
+                CancelInvoke("UpdateRoundTimer");
+            }
+        }
+    }
 
     private void GenerateGrid()
     {
@@ -186,6 +281,7 @@ public class GridManager : MonoBehaviour
             {
                 spills.Remove(spill);
             }
+            Score++;
             Destroy(spill.gameObject);
             SpawnRandomSpill();
         }
