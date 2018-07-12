@@ -28,6 +28,11 @@ public class TileUnit : MonoBehaviour
         Debug.Log("Clearing spill");
     }
 
+    public void MoustDoneIntercept()
+    {
+        OnMouseDown();
+    }
+
     private void OnMouseDown()
     {
         Debug.Log($"clicked {gameObject.name}");

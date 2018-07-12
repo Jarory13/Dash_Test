@@ -28,11 +28,15 @@ public class GridManager : MonoBehaviour
     private GameObject tablePrefab;
 
     [SerializeField]
+    private GameObject spillPrefab;
+
+    [SerializeField]
     private NodeIndex[] tablePositions;
 
     [SerializeField]
     private float GridYOffset = 2.0f;
 
+    private List<Spill> spills = new List<Spill>();
     private NodeIndex playerstart = new NodeIndex(1, 1);
     private string tileNameStart = "Tile(";
 
@@ -52,6 +56,8 @@ public class GridManager : MonoBehaviour
         GenerateGrid();
         SpawnTables();
         SpawnPlayer();
+        SpawnSpill(new NodeIndex(1, 3));
+        SpawnSpill(new NodeIndex(8, 1));
         RepositionCamera();
     }
 
@@ -59,8 +65,8 @@ public class GridManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-      
-       
+
+
     }
 
     // Update is called once per frame
@@ -96,7 +102,7 @@ public class GridManager : MonoBehaviour
                 currentPosition.Set(i, j + 1, 0.0f);
 
             }
-            currentPosition.Set(i +1, 0.0f, 0.0f);
+            currentPosition.Set(i + 1, 0.0f, 0.0f);
         }
     }
 
@@ -128,9 +134,61 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    private void SpawnSpill(NodeIndex index)
+    {
+        if (spillPrefab)
+        {
+            GameObject spill = Instantiate(spillPrefab, tiles[index.x, index.y].transform);
+            tiles[index.x, index.y].conatinsSplill = true;
+            spills.Add(spill.GetComponent<Spill>());
+        }
+    }
+
     public void SpawnRandomSpill()
     {
+        if (!playerReference)
+        {
+            return;
+        }
+
+        int playerX = playerReference.currentNodeIndex.x;
+        int playerY = playerReference.currentNodeIndex.y;
+
+        List<TileUnit> availableTiles = new List<TileUnit>();
+
+        for (int y = 0; y < gridHeight; y++)
+        {
+            for (int x = 0; x < gridWidth; x++)
+            {
+                if (!tiles[x, y].occupied && (x != playerX && y!= playerY) && !tiles[x,y].conatinsSplill)
+                {
+                    availableTiles.Add(tiles[x, y]);
+                }
+            }
+        }
+
+        int availableTilesCount = availableTiles.Count;
+        if (availableTilesCount > 0)
+        {
+            SpawnSpill(availableTiles[Random.Range(0, availableTilesCount)].myIndex);
+        }
+
         Debug.Log("Spawning spill");
+    }
+
+    public void CleanSpill(NodeIndex index)
+    {
+        if (tiles[index.x, index.y].conatinsSplill)
+        {
+            tiles[index.x, index.y].conatinsSplill = false;
+            Spill spill = tiles[index.x, index.y].GetComponentInChildren<Spill>();
+            if (spills.Contains(spill))
+            {
+                spills.Remove(spill);
+            }
+            Destroy(spill.gameObject);
+            SpawnRandomSpill();
+        }
     }
 
     public TileUnit GetTile(NodeIndex index)
