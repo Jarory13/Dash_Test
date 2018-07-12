@@ -518,7 +518,7 @@ public class LevelSetup : MonoBehaviour
             {
                 Tile nextTile = GetTile(path[i].nodeIndex);
 
-                yield return StartCoroutine(player.MoveWait(path[i].nodeIndex, nextTile.go.transform));
+                //yield return StartCoroutine(player.MoveWait(path[i].nodeIndex, nextTile.go.transform));
 
                 if (player)
                 {

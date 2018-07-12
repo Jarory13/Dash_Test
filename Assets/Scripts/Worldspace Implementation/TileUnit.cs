@@ -23,6 +23,11 @@ public class TileUnit : MonoBehaviour
 
     }
 
+    public void ClearSpill()
+    {
+        Debug.Log("Clearing spill");
+    }
+
     private void OnMouseDown()
     {
         Debug.Log($"clicked {gameObject.name}");
@@ -35,7 +40,8 @@ public class TileUnit : MonoBehaviour
                 return;
             }
 
-            StartCoroutine(playerRef.MoveWait(myIndex, transform));
+            //StartCoroutine(playerRef.MoveWait(myIndex, transform));
+            playerRef.MoveToTarget(myIndex, transform);
         }
     }
 }

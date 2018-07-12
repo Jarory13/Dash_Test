@@ -14,6 +14,9 @@ public class GridManager : MonoBehaviour
 
     public TileUnit[,] tiles;
     public Player playerReference;
+    public int Score;
+    public int gridWidth = 10;
+    public int gridHeight = 5;
 
     [SerializeField]
     private GameObject tileUnitPrefab;
@@ -28,17 +31,11 @@ public class GridManager : MonoBehaviour
     private NodeIndex[] tablePositions;
 
     [SerializeField]
-    private int gridWidth = 10;
-
-    [SerializeField]
-    private int gridHeight = 5;
-
-    [SerializeField]
     private float GridYOffset = 2.0f;
 
     private NodeIndex playerstart = new NodeIndex(1, 1);
     private string tileNameStart = "Tile(";
-   
+
 
     private void Awake()
     {
@@ -51,16 +48,18 @@ public class GridManager : MonoBehaviour
         {
             Destroy(this);
         }
+
+        GenerateGrid();
+        SpawnTables();
+        SpawnPlayer();
+        RepositionCamera();
     }
 
 
     // Use this for initialization
     void Start()
     {
-        GenerateGrid();
-        SpawnTables();
-        SpawnPlayer();
-        RepositionCamera();
+      
        
     }
 
@@ -107,10 +106,9 @@ public class GridManager : MonoBehaviour
         {
             NodeIndex index = tablePositions[i];
             TileUnit parentTile = tiles[index.x, index.y];
-            Instantiate(tablePrefab, new Vector3(index.x, index.y, 0.0f), Quaternion.identity, parentTile.gameObject.transform);
+            Instantiate(tablePrefab, new Vector3(index.x, index.y, 1.0f), Quaternion.identity, parentTile.gameObject.transform);
 
             parentTile.occupied = true;
-            parentTile.gameObject.AddComponent<NavMeshObstacle>();
         }
     }
 
@@ -126,10 +124,16 @@ public class GridManager : MonoBehaviour
             GameObject playerObject = Instantiate(playerPrefab, GetTile(playerstart).gameObject.transform.position, Quaternion.identity);
             playerReference = playerObject.GetComponent<Player>();
             playerReference.gridTransform = transform;
+            playerReference.currentNodeIndex = playerstart;
         }
     }
 
-    private TileUnit GetTile(NodeIndex index)
+    public void SpawnRandomSpill()
+    {
+        Debug.Log("Spawning spill");
+    }
+
+    public TileUnit GetTile(NodeIndex index)
     {
         return tiles[index.x, index.y];
     }
