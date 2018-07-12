@@ -28,7 +28,14 @@ public class TileUnit : MonoBehaviour
         Debug.Log($"clicked {gameObject.name}");
         if (!occupied)
         {
-            StartCoroutine(GridManager.instance.playerReference.MoveWait(myIndex, transform));
+            Player playerRef = GridManager.instance.playerReference;
+
+            if (!playerRef || playerRef.isMoving)
+            {
+                return;
+            }
+
+            StartCoroutine(playerRef.MoveWait(myIndex, transform));
         }
     }
 }

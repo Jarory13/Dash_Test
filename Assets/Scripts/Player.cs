@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.AI;
 
 public class Player : MonoBehaviour
 {
@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
 
 	public float speed = 1f;
 	public bool normalSpeed = true;			// DH: false for 1/3 speed, when "splipping"
+    public bool isMoving;
 
 	public Transform gridTransform;
 	public NodeIndex currentNodeIndex;
@@ -89,4 +90,20 @@ public class Player : MonoBehaviour
 			yield return null; 
 		}
 	}
+
+    //public void MoveTo(Vector3 target)
+    //{
+
+    //    if (!agent)
+    //    {
+    //        return;
+    //    }
+
+    //    NavMesh.CalculatePath(gameObject.transform.position, target, 1, path);
+
+    //    isMoving = true;
+
+    //    agent.SetPath(path);
+
+    //}
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 /**
@@ -14,12 +15,17 @@ public class GridManager : MonoBehaviour
     public TileUnit[,] tiles;
     public Player playerReference;
 
-
     [SerializeField]
     private GameObject tileUnitPrefab;
 
     [SerializeField]
     private GameObject playerPrefab;
+
+    [SerializeField]
+    private GameObject tablePrefab;
+
+    [SerializeField]
+    private NodeIndex[] tablePositions;
 
     [SerializeField]
     private int gridWidth = 10;
@@ -52,8 +58,10 @@ public class GridManager : MonoBehaviour
     void Start()
     {
         GenerateGrid();
+        SpawnTables();
         SpawnPlayer();
         RepositionCamera();
+       
     }
 
     // Update is called once per frame
@@ -90,6 +98,19 @@ public class GridManager : MonoBehaviour
 
             }
             currentPosition.Set(i +1, 0.0f, 0.0f);
+        }
+    }
+
+    private void SpawnTables()
+    {
+        for (int i = 0; i < tablePositions.Length; i++)
+        {
+            NodeIndex index = tablePositions[i];
+            TileUnit parentTile = tiles[index.x, index.y];
+            Instantiate(tablePrefab, new Vector3(index.x, index.y, 0.0f), Quaternion.identity, parentTile.gameObject.transform);
+
+            parentTile.occupied = true;
+            parentTile.gameObject.AddComponent<NavMeshObstacle>();
         }
     }
 
