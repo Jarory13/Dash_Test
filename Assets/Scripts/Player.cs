@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-	private RectTransform rectTransform;
 	private Image model;					// DH: Image in the child GameObject
 
 	private Color cleanColor = Color.red;
@@ -19,17 +18,10 @@ public class Player : MonoBehaviour
 
 	public void Awake()
 	{
-		rectTransform = gameObject.GetComponent<RectTransform>();
 		model = gameObject.GetComponentInChildren<Image>();
 
         
 	}
-
-    private void Start()
-    {
-        //Something is adjusting the player's scale. We need to reset it here. 
-        rectTransform.localScale = Vector3.one;
-    }
 
     public void SetPosition(NodeIndex desiredNodeIndex, Transform trans)
 	{
@@ -46,7 +38,7 @@ public class Player : MonoBehaviour
 	{
 //		Debug.Log("Player::MoveWait ... FROM : " + currentNodeIndex.x + ", " + currentNodeIndex.y + " : TO : " + desiredNodeIndex.x + ", " + desiredNodeIndex.y);
 
-		if (rectTransform && trans && gridTransform)
+		if (trans && gridTransform)
 		{
 			float scaleFactor = 1.1f * speed;
 			if (!normalSpeed)
@@ -95,4 +87,9 @@ public class Player : MonoBehaviour
 			yield return null; 
 		}
 	}
+
+    public void WeShouldMove()
+    {
+        Debug.Log("We should move");
+    }
 }
