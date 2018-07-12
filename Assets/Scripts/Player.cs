@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-	private Image model;					// DH: Image in the child GameObject
+	private SpriteRenderer model;					// DH: Image in the child GameObject
 
 	private Color cleanColor = Color.red;
 
@@ -16,12 +16,18 @@ public class Player : MonoBehaviour
 	public NodeIndex currentNodeIndex;
 	public NodeIndex desiredEndNodeIndex;
 
-	public void Awake()
-	{
-		model = gameObject.GetComponentInChildren<Image>();
+    private Color startColor = Color.white;
 
-        
-	}
+
+    public void Awake()
+	{
+		model = gameObject.GetComponent<SpriteRenderer>();
+
+        if (model)
+        {
+            startColor = model.color;
+        }
+    }
 
     public void SetPosition(NodeIndex desiredNodeIndex, Transform trans)
 	{
@@ -30,8 +36,6 @@ public class Player : MonoBehaviour
 		transform.position = pos;
 
 		currentNodeIndex = desiredNodeIndex;
-
-//		Debug.Log("Player::SetPosition: currentNodeIndex: " + currentNodeIndex.x + ", " + currentNodeIndex.y);
 	}
 
 	public IEnumerator MoveWait(NodeIndex desiredNodeIndex, Transform trans)
@@ -60,9 +64,7 @@ public class Player : MonoBehaviour
 	{
 		if (model)
 		{
-//			Debug.Log("Player::Clean Wait: " + time);
-
-			Color startColor = model.color;
+            //			Debug.Log("Player::Clean Wait: " + time);
 
 			model.color = cleanColor;
 
@@ -87,9 +89,4 @@ public class Player : MonoBehaviour
 			yield return null; 
 		}
 	}
-
-    public void WeShouldMove()
-    {
-        Debug.Log("We should move");
-    }
 }

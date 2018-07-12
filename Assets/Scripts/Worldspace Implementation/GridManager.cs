@@ -82,6 +82,8 @@ public class GridManager : MonoBehaviour
                 if (unit)
                 {
                     tiles[i, j] = unit;
+                    unit.myIndex.x = i;
+                    unit.myIndex.y = j;
                 }
 
                 currentPosition.Set(i, j + 1, 0.0f);
@@ -102,6 +104,7 @@ public class GridManager : MonoBehaviour
         {
             GameObject playerObject = Instantiate(playerPrefab, GetTile(playerstart).gameObject.transform.position, Quaternion.identity);
             playerReference = playerObject.GetComponent<Player>();
+            playerReference.gridTransform = transform;
         }
     }
 
