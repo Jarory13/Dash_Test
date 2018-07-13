@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/**
+ * Scale the background to fit the canvas. Use this in the demo implemntation
+ * */
 public class ScaleBackground : MonoBehaviour
 {
 

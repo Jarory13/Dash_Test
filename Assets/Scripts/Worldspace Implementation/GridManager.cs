@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 /**
  * Creates and manages the grid in world space. Prefabs should be set in editor
+ * Duplicated from LevelSetup and then heavily modified
  * */
 public class GridManager : MonoBehaviour
 {
@@ -90,20 +91,7 @@ public class GridManager : MonoBehaviour
         StartRound();
     }
 
-
-    // Use this for initialization
-    void Start()
-    {
-
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    //Copied from old LevelSetup
     private void SetupTitle()
     {
         if (titleText)
@@ -132,6 +120,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    //Copied from old LevelSetup
     private void MenuClose()
     {
         Debug.Log("LevelSetup:MenuClose");
@@ -142,6 +131,7 @@ public class GridManager : MonoBehaviour
 #endif
     }
 
+    //Copied from old LevelSetup
     void StartRound()
     {
         if (timeText != null)
@@ -152,6 +142,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    //Copied from old LevelSetup
     void UpdateRoundTimer()
     {
         if (timeText != null)
@@ -213,6 +204,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    //Use this to center the camera on the grid
     private void RepositionCamera()
     {
         Camera.main.transform.position = new Vector3(gridWidth / 2, (gridHeight / 2) + GridYOffset, -10);
@@ -222,7 +214,7 @@ public class GridManager : MonoBehaviour
     {
         if (playerPrefab)
         {
-            GameObject playerObject = Instantiate(playerPrefab, GetTile(playerstart).gameObject.transform.position, Quaternion.identity);
+            GameObject playerObject = Instantiate(playerPrefab, GetTile(playerstart).gameObject.transform.position - Vector3.forward, Quaternion.identity);
             playerReference = playerObject.GetComponent<Player>();
             playerReference.gridTransform = transform;
             playerReference.currentNodeIndex = playerstart;
@@ -239,6 +231,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    //Copied from old LevelSetup
     public void SpawnRandomSpill()
     {
         if (!playerReference)
@@ -287,6 +280,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    //This function works fine for now but it may be necessary to do some index out of bounds checks first down the road
     public TileUnit GetTile(NodeIndex index)
     {
         return tiles[index.x, index.y];

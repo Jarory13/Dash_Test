@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
+/**
+ * Player controller script. This is the only script modified from the original implementation. It may break the old Demo implementation
+ * */
 public class Player : MonoBehaviour
 {
-	private SpriteRenderer model;					// DH: Image in the child GameObject
 
-	private Color cleanColor = Color.red;
 
     public float baseSpeed = 3.0f;
 	public float speed = 1f;
@@ -20,12 +21,17 @@ public class Player : MonoBehaviour
 	public NodeIndex currentNodeIndex;
 	public NodeIndex desiredEndNodeIndex;
 
+    [SerializeField]
+    private float SpeedReduction = 3.0f;
     private NodeIndex targetNodeIndex;
     private Color startColor = Color.white;
-    private Seeker seeker;
     public TargetReached lerp;
     private AIDestinationSetter aIDestinationSetter;
-    private bool speedreduced = false;
+    private bool isCleaning = false;
+    private Vector3 targetPosition;
+    private SpriteRenderer model;                   // DH: Image in the child GameObject
+
+    private Color cleanColor = Color.red;
 
     public void Awake()
 	{
@@ -40,7 +46,7 @@ public class Player : MonoBehaviour
 
         speed = baseSpeed;
 
-        lerp.OnDestinationReached.AddListener(delegate { CheckForSpill(); });
+        lerp.OnDestinationReached.AddListener(delegate { DestinationReached(); });
     }
 
 
@@ -54,25 +60,36 @@ public class Player : MonoBehaviour
 
     public void SetPosition(NodeIndex desiredNodeIndex, Transform trans)
 	{
-		Vector3 pos = transform.position;
-		pos = trans.position;
-        //transform.position = pos;
+        targetPosition = trans.position;
 
         targetNodeIndex = desiredNodeIndex;
 	}
+
+    public void ReduceSpeed()
+    {
+        normalSpeed = false;
+        lerp.speed = speed / SpeedReduction;
+    }
+
+    public void ResetSpeed()
+    {
+        normalSpeed = true;
+        lerp.speed = speed;
+    }
 	 
 	public IEnumerator CleanWait(float time = 4f)
 	{
 		if (model)
 		{
-            //			Debug.Log("Player::Clean Wait: " + time);
+            isCleaning = true;
 
-			model.color = cleanColor;
+            model.color = cleanColor;
 
 			yield return new WaitForSeconds(time);
 
 			model.color = startColor;
             GridManager.instance.CleanSpill(currentNodeIndex);
+            isCleaning = false;
 		}
 		else
 		{
@@ -80,12 +97,25 @@ public class Player : MonoBehaviour
 		}
 	}
 
-    private void CheckForSpill()
+    private void DestinationReached()
     {
-        currentNodeIndex = targetNodeIndex;
-        if (GridManager.instance.tiles[currentNodeIndex.x, currentNodeIndex.y].conatinsSplill)
+        //Because A* is constantly checking path's we need to ensure that we've reached our destination by distance as well. 
+        if (Mathf.Abs(transform.position.x - targetPosition.x) < 0.2  && Mathf.Abs(transform.position.y - targetPosition.y) < 0.2)
         {
-            StartCoroutine(CleanWait());
+            //This line is necessary to keep flo from appaering behind the the spills. 
+            transform.position = transform.position - Vector3.forward;
+
+            currentNodeIndex = targetNodeIndex;
+            if (GridManager.instance.tiles[currentNodeIndex.x, currentNodeIndex.y].conatinsSplill)
+            {
+                if (!isCleaning)
+                {
+                    StopAllCoroutines();
+                    StartCoroutine(CleanWait());
+                }
+
+                
+            }
         }
     }
 }

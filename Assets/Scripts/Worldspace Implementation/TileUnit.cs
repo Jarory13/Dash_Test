@@ -11,23 +11,7 @@ public class TileUnit : MonoBehaviour
     public bool conatinsSplill;
     public NodeIndex myIndex = new NodeIndex();
 
-    // Use this for initialization
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public void ClearSpill()
-    {
-        Debug.Log("Clearing spill");
-    }
-
+    //Because placing spills on top of a tile intercepts it's mouse down input, we need this function to be able to call the MouseDownMethod externally
     public void MoustDoneIntercept()
     {
         OnMouseDown();

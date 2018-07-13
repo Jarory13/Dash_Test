@@ -5,18 +5,6 @@ using UnityEngine;
 public class Spill : MonoBehaviour
 {
 
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void OnTriggerEnter(Collider other)
     {
 
@@ -26,9 +14,7 @@ public class Spill : MonoBehaviour
 
             if (player)
             {
-                player.normalSpeed = false;
-                player.lerp.speed = player.speed / 3;
-                Debug.Log("Player entered spill");
+                player.ReduceSpeed();
             }
         }
     }
@@ -41,9 +27,7 @@ public class Spill : MonoBehaviour
 
             if (player)
             {
-                player.normalSpeed = true;
-                player.lerp.speed = player.speed;
-                Debug.Log("Player exited spill");
+                player.ResetSpeed();
             }
         }
     }

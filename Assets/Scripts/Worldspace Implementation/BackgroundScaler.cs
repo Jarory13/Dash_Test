@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * Helper class attached to background image. this will resize it to fill the camera, giving us a consistent background across all screen sizes.
+ * Use this in the world space implementation.
+ * */
 public class BackgroundScaler : MonoBehaviour
 {
 
@@ -9,12 +13,6 @@ public class BackgroundScaler : MonoBehaviour
     void Start()
     {
         ResizeSpriteToScreen();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     private void ResizeSpriteToScreen()
