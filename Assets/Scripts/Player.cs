@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
 	public bool normalSpeed = true;			// DH: false for 1/3 speed, when "splipping"
     public bool isMoving;
     public bool playerWillStopToClean;
+    public bool isCleaning = false;
 
 
     public Transform gridTransform;
@@ -27,7 +28,7 @@ public class Player : MonoBehaviour
     private Color startColor = Color.white;
     public TargetReached lerp;
     private AIDestinationSetter aIDestinationSetter;
-    private bool isCleaning = false;
+
     private Vector3 targetPosition;
     private SpriteRenderer model;                   // DH: Image in the child GameObject
 

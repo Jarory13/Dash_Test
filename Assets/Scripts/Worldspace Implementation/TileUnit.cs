@@ -24,7 +24,7 @@ public class TileUnit : MonoBehaviour
         {
             Player playerRef = GridManager.instance.playerReference;
 
-            if (!playerRef || playerRef.isMoving)
+            if (!playerRef || playerRef.isMoving || playerRef.isCleaning)
             {
                 return;
             }
